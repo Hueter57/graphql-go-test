@@ -1,0 +1,2 @@
+# GlaphQL in Golang test
+

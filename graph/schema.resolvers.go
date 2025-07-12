@@ -6,47 +6,37 @@ package graph
 
 import (
 	"context"
-	"crypto/rand"
 	"fmt"
-	"math/big"
 
 	"github.com/Hueter57/graphql-go-test/graph/model"
+	"github.com/Hueter57/graphql-go-test/internal"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	randNumber, _ := rand.Int(rand.Reader, big.NewInt(100))
-	todo := &model.Todo{
-		Text:   input.Text,
-		ID:     fmt.Sprintf("T%d", randNumber),
-		UserID: input.UserID,
-	}
-	r.todos = append(r.todos, todo)
-	return todo, nil
+// AddProjectV2ItemByID is the resolver for the addProjectV2ItemById field.
+func (r *mutationResolver) AddProjectV2ItemByID(ctx context.Context, input model.AddProjectV2ItemByIDInput) (*model.AddProjectV2ItemByIDPayload, error) {
+	panic(fmt.Errorf("not implemented: AddProjectV2ItemByID - addProjectV2ItemById"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+// Repository is the resolver for the repository field.
+func (r *queryResolver) Repository(ctx context.Context, name string, owner string) (*model.Repository, error) {
+	panic(fmt.Errorf("not implemented: Repository - repository"))
 }
 
 // User is the resolver for the user field.
-func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
-	return &model.User{
-		ID:   obj.UserID,
-		Name: "User " + obj.UserID,
-	}, nil
+func (r *queryResolver) User(ctx context.Context, name string) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: User - user"))
 }
 
-// Mutation returns MutationResolver implementation.
-func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+// Node is the resolver for the node field.
+func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
+	panic(fmt.Errorf("not implemented: Node - node"))
+}
 
-// Query returns QueryResolver implementation.
-func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+// Mutation returns internal.MutationResolver implementation.
+func (r *Resolver) Mutation() internal.MutationResolver { return &mutationResolver{r} }
 
-// Todo returns TodoResolver implementation.
-func (r *Resolver) Todo() TodoResolver { return &todoResolver{r} }
+// Query returns internal.QueryResolver implementation.
+func (r *Resolver) Query() internal.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-type todoResolver struct{ *Resolver }

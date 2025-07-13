@@ -12,6 +12,9 @@ import (
 	"github.com/Hueter57/graphql-go-test/internal"
 )
 
+type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }
+
 // AddProjectV2ItemByID is the resolver for the addProjectV2ItemById field.
 func (r *mutationResolver) AddProjectV2ItemByID(ctx context.Context, input model.AddProjectV2ItemByIDInput) (*model.AddProjectV2ItemByIDPayload, error) {
 	panic(fmt.Errorf("not implemented: AddProjectV2ItemByID - addProjectV2ItemById"))
@@ -24,7 +27,7 @@ func (r *queryResolver) Repository(ctx context.Context, name string, owner strin
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, name string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	return r.Srv.GetUserByName(ctx, name)
 }
 
 // Node is the resolver for the node field.
@@ -37,6 +40,3 @@ func (r *Resolver) Mutation() internal.MutationResolver { return &mutationResolv
 
 // Query returns internal.QueryResolver implementation.
 func (r *Resolver) Query() internal.QueryResolver { return &queryResolver{r} }
-
-type mutationResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }

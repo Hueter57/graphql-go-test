@@ -20,18 +20,9 @@ type Repository implements Node {
   owner: User!
   name: String!
   createdAt: DateTime!
-  issue(
-    number: Int!
-  ): Issue
-  issues(
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): IssueConnection!
-  pullRequest(
-    number: Int!
-  ): PullRequest
+  issue(number: Int!): Issue
+  issues(after: String, before: String, first: Int, last: Int): IssueConnection!
+  pullRequest(number: Int!): PullRequest
   pullRequests(
     after: String
     before: String
@@ -43,9 +34,7 @@ type Repository implements Node {
 type User implements Node {
   id: ID!
   name: String!
-  projectV2(
-    number: Int!
-  ): ProjectV2
+  projectV2(number: Int!): ProjectV2
   projectV2s(
     after: String
     before: String
@@ -157,19 +146,10 @@ type ProjectV2ItemEdge {
 }
 
 type Query {
-  repository(
-    name: String!
-    owner: String!
-  ): Repository
+  repository(name: String!, owner: String!): Repository
 
-  user(
-    name: String!
-  ): User @isAuthenticated
-
-  node(
-    id: ID!
-  ): Node
-
+  user(name: String!): User # @isAuthenticated
+  node(id: ID!): Node
 }
 
 input AddProjectV2ItemByIdInput {

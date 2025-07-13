@@ -17,3 +17,22 @@ resolver:
   layout: follow-schema
   dir: graph
   package: graph
+
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.ID
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32s
+  DateTime:
+    model:
+      - github.com/99designs/gqlgen/graphql.Time
+  URI:
+    model:
+      - github.com/Hueter57/graphql-go-test/graph/model.URI

@@ -12,14 +12,74 @@ import (
 	"github.com/Hueter57/graphql-go-test/internal"
 )
 
+// Edges is the resolver for the edges field.
+func (r *issueConnectionResolver) Edges(ctx context.Context, obj *model.IssueConnection) ([]*model.IssueEdge, error) {
+	panic(fmt.Errorf("not implemented: Edges - edges"))
+}
+
+// Nodes is the resolver for the nodes field.
+func (r *issueConnectionResolver) Nodes(ctx context.Context, obj *model.IssueConnection) ([]*model.Issue, error) {
+	panic(fmt.Errorf("not implemented: Nodes - nodes"))
+}
+
+// Node is the resolver for the node field.
+func (r *issueEdgeResolver) Node(ctx context.Context, obj *model.IssueEdge) (*model.Issue, error) {
+	panic(fmt.Errorf("not implemented: Node - node"))
+}
+
 // AddProjectV2ItemByID is the resolver for the addProjectV2ItemById field.
 func (r *mutationResolver) AddProjectV2ItemByID(ctx context.Context, input model.AddProjectV2ItemByIDInput) (*model.AddProjectV2ItemByIDPayload, error) {
 	panic(fmt.Errorf("not implemented: AddProjectV2ItemByID - addProjectV2ItemById"))
 }
 
+// Items is the resolver for the items field.
+func (r *projectV2Resolver) Items(ctx context.Context, obj *model.ProjectV2, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error) {
+	panic(fmt.Errorf("not implemented: Items - items"))
+}
+
 // Owner is the resolver for the owner field.
 func (r *projectV2Resolver) Owner(ctx context.Context, obj *model.ProjectV2) (*model.User, error) {
 	return r.Srv.GetUserByID(ctx, obj.Owner.ID)
+}
+
+// Edges is the resolver for the edges field.
+func (r *projectV2ConnectionResolver) Edges(ctx context.Context, obj *model.ProjectV2Connection) ([]*model.ProjectV2Edge, error) {
+	panic(fmt.Errorf("not implemented: Edges - edges"))
+}
+
+// Nodes is the resolver for the nodes field.
+func (r *projectV2ConnectionResolver) Nodes(ctx context.Context, obj *model.ProjectV2Connection) ([]*model.ProjectV2, error) {
+	panic(fmt.Errorf("not implemented: Nodes - nodes"))
+}
+
+// Node is the resolver for the node field.
+func (r *projectV2EdgeResolver) Node(ctx context.Context, obj *model.ProjectV2Edge) (*model.ProjectV2, error) {
+	panic(fmt.Errorf("not implemented: Node - node"))
+}
+
+// Repository is the resolver for the repository field.
+func (r *pullRequestResolver) Repository(ctx context.Context, obj *model.PullRequest) (*model.Repository, error) {
+	panic(fmt.Errorf("not implemented: Repository - repository"))
+}
+
+// ProjectItems is the resolver for the projectItems field.
+func (r *pullRequestResolver) ProjectItems(ctx context.Context, obj *model.PullRequest, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error) {
+	panic(fmt.Errorf("not implemented: ProjectItems - projectItems"))
+}
+
+// Edges is the resolver for the edges field.
+func (r *pullRequestConnectionResolver) Edges(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequestEdge, error) {
+	panic(fmt.Errorf("not implemented: Edges - edges"))
+}
+
+// Nodes is the resolver for the nodes field.
+func (r *pullRequestConnectionResolver) Nodes(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequest, error) {
+	panic(fmt.Errorf("not implemented: Nodes - nodes"))
+}
+
+// Node is the resolver for the node field.
+func (r *pullRequestEdgeResolver) Node(ctx context.Context, obj *model.PullRequestEdge) (*model.PullRequest, error) {
+	panic(fmt.Errorf("not implemented: Node - node"))
 }
 
 // Repository is the resolver for the repository field.
@@ -62,11 +122,50 @@ func (r *repositoryResolver) PullRequests(ctx context.Context, obj *model.Reposi
 	panic(fmt.Errorf("not implemented: PullRequests - pullRequests"))
 }
 
+// ProjectV2 is the resolver for the projectV2 field.
+func (r *userResolver) ProjectV2(ctx context.Context, obj *model.User, number int) (*model.ProjectV2, error) {
+	panic(fmt.Errorf("not implemented: ProjectV2 - projectV2"))
+}
+
+// ProjectV2s is the resolver for the projectV2s field.
+func (r *userResolver) ProjectV2s(ctx context.Context, obj *model.User, after *string, before *string, first *int, last *int) (*model.ProjectV2Connection, error) {
+	panic(fmt.Errorf("not implemented: ProjectV2s - projectV2s"))
+}
+
+// IssueConnection returns internal.IssueConnectionResolver implementation.
+func (r *Resolver) IssueConnection() internal.IssueConnectionResolver {
+	return &issueConnectionResolver{r}
+}
+
+// IssueEdge returns internal.IssueEdgeResolver implementation.
+func (r *Resolver) IssueEdge() internal.IssueEdgeResolver { return &issueEdgeResolver{r} }
+
 // Mutation returns internal.MutationResolver implementation.
 func (r *Resolver) Mutation() internal.MutationResolver { return &mutationResolver{r} }
 
 // ProjectV2 returns internal.ProjectV2Resolver implementation.
 func (r *Resolver) ProjectV2() internal.ProjectV2Resolver { return &projectV2Resolver{r} }
+
+// ProjectV2Connection returns internal.ProjectV2ConnectionResolver implementation.
+func (r *Resolver) ProjectV2Connection() internal.ProjectV2ConnectionResolver {
+	return &projectV2ConnectionResolver{r}
+}
+
+// ProjectV2Edge returns internal.ProjectV2EdgeResolver implementation.
+func (r *Resolver) ProjectV2Edge() internal.ProjectV2EdgeResolver { return &projectV2EdgeResolver{r} }
+
+// PullRequest returns internal.PullRequestResolver implementation.
+func (r *Resolver) PullRequest() internal.PullRequestResolver { return &pullRequestResolver{r} }
+
+// PullRequestConnection returns internal.PullRequestConnectionResolver implementation.
+func (r *Resolver) PullRequestConnection() internal.PullRequestConnectionResolver {
+	return &pullRequestConnectionResolver{r}
+}
+
+// PullRequestEdge returns internal.PullRequestEdgeResolver implementation.
+func (r *Resolver) PullRequestEdge() internal.PullRequestEdgeResolver {
+	return &pullRequestEdgeResolver{r}
+}
 
 // Query returns internal.QueryResolver implementation.
 func (r *Resolver) Query() internal.QueryResolver { return &queryResolver{r} }
@@ -74,7 +173,18 @@ func (r *Resolver) Query() internal.QueryResolver { return &queryResolver{r} }
 // Repository returns internal.RepositoryResolver implementation.
 func (r *Resolver) Repository() internal.RepositoryResolver { return &repositoryResolver{r} }
 
+// User returns internal.UserResolver implementation.
+func (r *Resolver) User() internal.UserResolver { return &userResolver{r} }
+
+type issueConnectionResolver struct{ *Resolver }
+type issueEdgeResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type projectV2Resolver struct{ *Resolver }
+type projectV2ConnectionResolver struct{ *Resolver }
+type projectV2EdgeResolver struct{ *Resolver }
+type pullRequestResolver struct{ *Resolver }
+type pullRequestConnectionResolver struct{ *Resolver }
+type pullRequestEdgeResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type repositoryResolver struct{ *Resolver }
+type userResolver struct{ *Resolver }

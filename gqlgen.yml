@@ -31,10 +31,61 @@ models:
         resolver: true
       pullRequests:
         resolver: true
+  User:
+    fields:
+      projectV2:
+        resolver: true
+      projectV2s:
+        resolver: true
+  issue:
+    fields:
+      repository:
+        resolver: true
+      projectItems:
+        resolver: true
+  IssueConnection:
+    fields:
+      nodes:
+        resolver: true
+      edges:
+        resolver: true
+  IssueEdge:
+    fields:
+      node:
+        resolver: true
+  PullRequest:
+    fields:
+      repository:
+        resolver: true
+      projectItems:
+        resolver: true
+  PullRequestConnection:
+    fields:
+      nodes:
+        resolver: true
+      edges:
+        resolver: true
+  PullRequestEdge:
+    fields:
+      node:
+        resolver: true
   ProjectV2:
     fields:
+      items:
+        resolver: true
       owner:
         resolver: true
+  ProjectV2Connection:
+    fields:
+      nodes:
+        resolver: true
+      edges:
+        resolver: true
+  ProjectV2Edge:
+    fields:
+      node:
+        resolver: true
+  
 
   ID:
     model:

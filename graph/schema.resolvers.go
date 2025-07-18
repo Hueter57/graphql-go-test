@@ -17,6 +17,11 @@ func (r *mutationResolver) AddProjectV2ItemByID(ctx context.Context, input model
 	panic(fmt.Errorf("not implemented: AddProjectV2ItemByID - addProjectV2ItemById"))
 }
 
+// Owner is the resolver for the owner field.
+func (r *projectV2Resolver) Owner(ctx context.Context, obj *model.ProjectV2) (*model.User, error) {
+	return r.Srv.GetUserByID(ctx, obj.Owner.ID)
+}
+
 // Repository is the resolver for the repository field.
 func (r *queryResolver) Repository(ctx context.Context, name string, owner string) (*model.Repository, error) {
 	panic(fmt.Errorf("not implemented: Repository - repository"))
@@ -32,11 +37,44 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 	panic(fmt.Errorf("not implemented: Node - node"))
 }
 
+// Owner is the resolver for the owner field.
+func (r *repositoryResolver) Owner(ctx context.Context, obj *model.Repository) (*model.User, error) {
+	return r.Srv.GetUserByID(ctx, obj.Owner.ID)
+}
+
+// Issue is the resolver for the issue field.
+func (r *repositoryResolver) Issue(ctx context.Context, obj *model.Repository, number int) (*model.Issue, error) {
+	return r.Srv.GetIssueByRepoAndNumber(ctx, obj.ID, number)
+}
+
+// Issues is the resolver for the issues field.
+func (r *repositoryResolver) Issues(ctx context.Context, obj *model.Repository, after *string, before *string, first *int, last *int) (*model.IssueConnection, error) {
+	panic(fmt.Errorf("not implemented: Issues - issues"))
+}
+
+// PullRequest is the resolver for the pullRequest field.
+func (r *repositoryResolver) PullRequest(ctx context.Context, obj *model.Repository, number int) (*model.PullRequest, error) {
+	panic(fmt.Errorf("not implemented: PullRequest - pullRequest"))
+}
+
+// PullRequests is the resolver for the pullRequests field.
+func (r *repositoryResolver) PullRequests(ctx context.Context, obj *model.Repository, after *string, before *string, first *int, last *int) (*model.PullRequestConnection, error) {
+	panic(fmt.Errorf("not implemented: PullRequests - pullRequests"))
+}
+
 // Mutation returns internal.MutationResolver implementation.
 func (r *Resolver) Mutation() internal.MutationResolver { return &mutationResolver{r} }
+
+// ProjectV2 returns internal.ProjectV2Resolver implementation.
+func (r *Resolver) ProjectV2() internal.ProjectV2Resolver { return &projectV2Resolver{r} }
 
 // Query returns internal.QueryResolver implementation.
 func (r *Resolver) Query() internal.QueryResolver { return &queryResolver{r} }
 
+// Repository returns internal.RepositoryResolver implementation.
+func (r *Resolver) Repository() internal.RepositoryResolver { return &repositoryResolver{r} }
+
 type mutationResolver struct{ *Resolver }
+type projectV2Resolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type repositoryResolver struct{ *Resolver }

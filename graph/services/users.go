@@ -32,3 +32,16 @@ func (u *userService) GetUserByName(ctx context.Context, name string) (*model.Us
 
 	return convertUser(user), nil
 }
+
+func (u *userService) GetUserByID(ctx context.Context, id string) (*model.User, error) {
+	user, err := db.Users( // from users
+		qm.Select(db.UserTableColumns.ID, db.UserTableColumns.Name), // select id, name
+		db.UserWhere.ID.EQ(id),
+	).One(ctx, u.exec) // limit 1
+
+	if err != nil {
+		return nil, err
+	}
+
+	return convertUser(user), nil
+}

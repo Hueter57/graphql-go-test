@@ -12,6 +12,21 @@ import (
 	"github.com/Hueter57/graphql-go-test/internal"
 )
 
+// Author is the resolver for the author field.
+func (r *issueResolver) Author(ctx context.Context, obj *model.Issue) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: Author - author"))
+}
+
+// Repository is the resolver for the repository field.
+func (r *issueResolver) Repository(ctx context.Context, obj *model.Issue) (*model.Repository, error) {
+	panic(fmt.Errorf("not implemented: Repository - repository"))
+}
+
+// ProjectItems is the resolver for the projectItems field.
+func (r *issueResolver) ProjectItems(ctx context.Context, obj *model.Issue, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error) {
+	panic(fmt.Errorf("not implemented: ProjectItems - projectItems"))
+}
+
 // Edges is the resolver for the edges field.
 func (r *issueConnectionResolver) Edges(ctx context.Context, obj *model.IssueConnection) ([]*model.IssueEdge, error) {
 	panic(fmt.Errorf("not implemented: Edges - edges"))
@@ -132,6 +147,9 @@ func (r *userResolver) ProjectV2s(ctx context.Context, obj *model.User, after *s
 	panic(fmt.Errorf("not implemented: ProjectV2s - projectV2s"))
 }
 
+// Issue returns internal.IssueResolver implementation.
+func (r *Resolver) Issue() internal.IssueResolver { return &issueResolver{r} }
+
 // IssueConnection returns internal.IssueConnectionResolver implementation.
 func (r *Resolver) IssueConnection() internal.IssueConnectionResolver {
 	return &issueConnectionResolver{r}
@@ -176,6 +194,7 @@ func (r *Resolver) Repository() internal.RepositoryResolver { return &repository
 // User returns internal.UserResolver implementation.
 func (r *Resolver) User() internal.UserResolver { return &userResolver{r} }
 
+type issueResolver struct{ *Resolver }
 type issueConnectionResolver struct{ *Resolver }
 type issueEdgeResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }

@@ -37,8 +37,10 @@ models:
         resolver: true
       projectV2s:
         resolver: true
-  issue:
+  Issue:
     fields:
+      author:
+        resolver: true
       repository:
         resolver: true
       projectItems:

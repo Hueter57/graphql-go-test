@@ -1,2 +1,2 @@
-schema: "graph/schema.graphqls"
+schema: "schema/*.graphqls"
 documents: "graph/*.{graphql,js,ts,jsx,tsx}"

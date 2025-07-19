@@ -56,7 +56,6 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
-	IsAuthenticated func(ctx context.Context, obj any, next graphql.Resolver) (res any, err error)
 }
 
 type ComplexityRoot struct {
@@ -223,9 +222,9 @@ type PullRequestEdgeResolver interface {
 	Node(ctx context.Context, obj *model.PullRequestEdge) (*model.PullRequest, error)
 }
 type QueryResolver interface {
+	Node(ctx context.Context, id string) (model.Node, error)
 	Repository(ctx context.Context, name string, owner string) (*model.Repository, error)
 	User(ctx context.Context, name string) (*model.User, error)
-	Node(ctx context.Context, id string) (model.Node, error)
 }
 type RepositoryResolver interface {
 	Owner(ctx context.Context, obj *model.Repository) (*model.User, error)
@@ -920,9 +919,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "../schema.graphqls", Input: `directive @isAuthenticated on FIELD_DEFINITION
-
-scalar DateTime
+	{Name: "../schema/schema.graphqls", Input: `scalar DateTime
   @specifiedBy(url: "https://scalars.graphql.org/andimarek/local-date")
 
 scalar URI @specifiedBy(url: "https://tools.ietf.org/html/rfc3986")
@@ -938,35 +935,11 @@ type PageInfo {
   startCursor: String
 }
 
-type Repository implements Node {
-  id: ID!
-  owner: User!
-  name: String!
-  createdAt: DateTime!
-  issue(number: Int!): Issue
-  issues(after: String, before: String, first: Int, last: Int): IssueConnection!
-  pullRequest(number: Int!): PullRequest
-  pullRequests(
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): PullRequestConnection!
+extend type Query {
+  node(id: ID!): Node
 }
-
-type User implements Node {
-  id: ID!
-  name: String!
-  projectV2(number: Int!): ProjectV2
-  projectV2s(
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): ProjectV2Connection!
-}
-
-type Issue implements Node {
+`, BuiltIn: false},
+	{Name: "../schema/issue.graphqls", Input: `type Issue implements Node {
   id: ID!
   url: URI!
   title: String!
@@ -992,37 +965,8 @@ type IssueConnection {
 type IssueEdge {
   cursor: String!
   node: Issue
-}
-
-type PullRequest implements Node {
-  id: ID!
-  baseRefName: String!
-  closed: Boolean!
-  headRefName: String!
-  url: URI!
-  number: Int!
-  repository: Repository!
-  projectItems(
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): ProjectV2ItemConnection!
-}
-
-type PullRequestConnection {
-  edges: [PullRequestEdge]
-  nodes: [PullRequest]
-  pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-type PullRequestEdge {
-  cursor: String!
-  node: PullRequest
-}
-
-type ProjectV2 implements Node {
+}`, BuiltIn: false},
+	{Name: "../schema/projectV2.graphqls", Input: `type ProjectV2 implements Node {
   id: ID!
   title: String!
   url: URI!
@@ -1068,13 +1012,6 @@ type ProjectV2ItemEdge {
   node: ProjectV2Item
 }
 
-type Query {
-  repository(name: String!, owner: String!): Repository
-
-  user(name: String!): User # @isAuthenticated
-  node(id: ID!): Node
-}
-
 input AddProjectV2ItemByIdInput {
   contentId: ID!
   projectId: ID!
@@ -1084,12 +1021,74 @@ type AddProjectV2ItemByIdPayload {
   item: ProjectV2Item
 }
 
-type Mutation {
+extend type Mutation {
   addProjectV2ItemById(
     input: AddProjectV2ItemByIdInput!
   ): AddProjectV2ItemByIdPayload
 }
 `, BuiltIn: false},
+	{Name: "../schema/pullrequest.graphqls", Input: `type PullRequest implements Node {
+  id: ID!
+  baseRefName: String!
+  closed: Boolean!
+  headRefName: String!
+  url: URI!
+  number: Int!
+  repository: Repository!
+  projectItems(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ProjectV2ItemConnection!
+}
+
+type PullRequestConnection {
+  edges: [PullRequestEdge]
+  nodes: [PullRequest]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PullRequestEdge {
+  cursor: String!
+  node: PullRequest
+}
+`, BuiltIn: false},
+	{Name: "../schema/repository.graphqls", Input: `type Repository implements Node {
+  id: ID!
+  owner: User!
+  name: String!
+  createdAt: DateTime!
+  issue(number: Int!): Issue
+  issues(after: String, before: String, first: Int, last: Int): IssueConnection!
+  pullRequest(number: Int!): PullRequest
+  pullRequests(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): PullRequestConnection!
+}
+
+extend type Query {
+  repository(name: String!, owner: String!): Repository
+}`, BuiltIn: false},
+	{Name: "../schema/user.graphqls", Input: `type User implements Node {
+  id: ID!
+  name: String!
+  projectV2(number: Int!): ProjectV2
+  projectV2s(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ProjectV2Connection!
+}
+
+extend type Query {
+  user(name: String!): User # @isAuthenticated
+}`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -4751,6 +4750,58 @@ func (ec *executionContext) fieldContext_PullRequestEdge_node(_ context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_node(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Node(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(model.Node)
+	fc.Result = res
+	return ec.marshalONode2githubᚗcomᚋHueter57ᚋgraphqlᚑgoᚑtestᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("FieldContext.Child cannot be called on type INTERFACE")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_node_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_repository(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_repository(ctx, field)
 	if err != nil {
@@ -4877,58 +4928,6 @@ func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field g
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_user_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_node(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_node(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Node(rctx, fc.Args["id"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(model.Node)
-	fc.Result = res
-	return ec.marshalONode2githubᚗcomᚋHueter57ᚋgraphqlᚑgoᚑtestᚋgraphᚋmodelᚐNode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("FieldContext.Child cannot be called on type INTERFACE")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_node_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -8730,7 +8729,7 @@ func (ec *executionContext) _ProjectV2ItemEdge(ctx context.Context, sel ast.Sele
 	return out
 }
 
-var pullRequestImplementors = []string{"PullRequest", "Node", "ProjectV2ItemContent"}
+var pullRequestImplementors = []string{"PullRequest", "ProjectV2ItemContent", "Node"}
 
 func (ec *executionContext) _PullRequest(ctx context.Context, sel ast.SelectionSet, obj *model.PullRequest) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, pullRequestImplementors)
@@ -9067,6 +9066,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "node":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_node(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "repository":
 			field := field
 
@@ -9096,25 +9114,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_user(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "node":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_node(ctx, field)
 				return res
 			}
 

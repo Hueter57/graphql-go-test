@@ -1,0 +1,27 @@
+type PullRequest implements Node {
+  id: ID!
+  baseRefName: String!
+  closed: Boolean!
+  headRefName: String!
+  url: URI!
+  number: Int!
+  repository: Repository!
+  projectItems(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ProjectV2ItemConnection!
+}
+
+type PullRequestConnection {
+  edges: [PullRequestEdge]
+  nodes: [PullRequest]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PullRequestEdge {
+  cursor: String!
+  node: PullRequest
+}

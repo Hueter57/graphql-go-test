@@ -1,0 +1,27 @@
+type Issue implements Node {
+  id: ID!
+  url: URI!
+  title: String!
+  closed: Boolean!
+  number: Int!
+  author: User!
+  repository: Repository!
+  projectItems(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ProjectV2ItemConnection!
+}
+
+type IssueConnection {
+  edges: [IssueEdge]
+  nodes: [Issue]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type IssueEdge {
+  cursor: String!
+  node: Issue
+}

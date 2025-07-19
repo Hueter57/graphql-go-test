@@ -119,10 +119,10 @@ type PullRequest struct {
 	ProjectItems *ProjectV2ItemConnection `json:"projectItems"`
 }
 
+func (PullRequest) IsProjectV2ItemContent() {}
+
 func (PullRequest) IsNode()            {}
 func (this PullRequest) GetID() string { return this.ID }
-
-func (PullRequest) IsProjectV2ItemContent() {}
 
 type PullRequestConnection struct {
 	Edges      []*PullRequestEdge `json:"edges,omitempty"`

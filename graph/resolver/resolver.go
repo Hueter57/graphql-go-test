@@ -1,4 +1,4 @@
-package graph
+package resolver
 
 import "github.com/Hueter57/graphql-go-test/graph/services"
 

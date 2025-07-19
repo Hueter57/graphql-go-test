@@ -22,7 +22,7 @@ func (i *issueService) GetIssueByRepoAndNumber(ctx context.Context, repoID strin
 			db.IssueColumns.Title,
 			db.IssueColumns.Closed,
 			db.IssueColumns.Number,
-			// db.IssueColumns.Author,
+			db.IssueColumns.Author,
 			db.IssueColumns.Repository,
 		),
 		db.IssueWhere.Repository.EQ(repoID),
@@ -46,7 +46,7 @@ func convertIssue(issue *db.Issue) *model.Issue {
 		Title:      issue.Title,
 		Closed:     (issue.Closed == 1),
 		Number:     int(issue.Number),
-		// Author:     &model.User{ID: issue.Author},
+		Author:     &model.User{ID: issue.Author},
 		Repository: &model.Repository{ID: issue.Repository},
 	}
 }

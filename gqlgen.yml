@@ -47,12 +47,12 @@ models:
         resolver: true
       projectItems:
         resolver: true
-  IssueConnection:
-    fields:
-      nodes:
-        resolver: true
-      edges:
-        resolver: true
+  # IssueConnection:
+  #   fields:
+  #     nodes:
+  #       resolver: true
+  #     edges:
+  #       resolver: true
   IssueEdge:
     fields:
       node:
@@ -63,12 +63,12 @@ models:
         resolver: true
       projectItems:
         resolver: true
-  PullRequestConnection:
-    fields:
-      nodes:
-        resolver: true
-      edges:
-        resolver: true
+  # PullRequestConnection:
+  #   fields:
+  #     nodes:
+  #       resolver: true
+  #     edges:
+  #       resolver: true
   PullRequestEdge:
     fields:
       node:
@@ -79,12 +79,12 @@ models:
         resolver: true
       owner:
         resolver: true
-  ProjectV2Connection:
-    fields:
-      nodes:
-        resolver: true
-      edges:
-        resolver: true
+  # ProjectV2Connection:
+  #   fields:
+  #     nodes:
+  #       resolver: true
+  #     edges:
+  #       resolver: true
   ProjectV2Edge:
     fields:
       node:

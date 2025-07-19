@@ -14,10 +14,12 @@ type UserService interface {
 
 type RepositoryService interface {
 	GetRepoByFullName(ctx context.Context, owner, name string) (*model.Repository, error)
+	GetRepoByID(ctx context.Context, id string) (*model.Repository, error)
 }
 
 type IssueService interface {
 	GetIssueByRepoAndNumber(ctx context.Context, repoID string, number int) (*model.Issue, error)
+	ListIssueInRepository(ctx context.Context, repoID string, after *string, before *string, first *int, last *int) (*model.IssueConnection, error)
 }
 
 type Services interface {

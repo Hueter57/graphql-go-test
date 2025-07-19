@@ -29,7 +29,7 @@ func (r *repositoryResolver) Issue(ctx context.Context, obj *model.Repository, n
 
 // Issues is the resolver for the issues field.
 func (r *repositoryResolver) Issues(ctx context.Context, obj *model.Repository, after *string, before *string, first *int, last *int) (*model.IssueConnection, error) {
-	panic(fmt.Errorf("not implemented: Issues - issues"))
+	return r.Srv.ListIssueInRepository(ctx, obj.ID, after, before, first, last)
 }
 
 // PullRequest is the resolver for the pullRequest field.

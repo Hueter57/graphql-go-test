@@ -22,16 +22,6 @@ func (r *pullRequestResolver) ProjectItems(ctx context.Context, obj *model.PullR
 	panic(fmt.Errorf("not implemented: ProjectItems - projectItems"))
 }
 
-// Edges is the resolver for the edges field.
-func (r *pullRequestConnectionResolver) Edges(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequestEdge, error) {
-	panic(fmt.Errorf("not implemented: Edges - edges"))
-}
-
-// Nodes is the resolver for the nodes field.
-func (r *pullRequestConnectionResolver) Nodes(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequest, error) {
-	panic(fmt.Errorf("not implemented: Nodes - nodes"))
-}
-
 // Node is the resolver for the node field.
 func (r *pullRequestEdgeResolver) Node(ctx context.Context, obj *model.PullRequestEdge) (*model.PullRequest, error) {
 	panic(fmt.Errorf("not implemented: Node - node"))
@@ -40,16 +30,29 @@ func (r *pullRequestEdgeResolver) Node(ctx context.Context, obj *model.PullReque
 // PullRequest returns internal.PullRequestResolver implementation.
 func (r *Resolver) PullRequest() internal.PullRequestResolver { return &pullRequestResolver{r} }
 
-// PullRequestConnection returns internal.PullRequestConnectionResolver implementation.
-func (r *Resolver) PullRequestConnection() internal.PullRequestConnectionResolver {
-	return &pullRequestConnectionResolver{r}
-}
-
 // PullRequestEdge returns internal.PullRequestEdgeResolver implementation.
 func (r *Resolver) PullRequestEdge() internal.PullRequestEdgeResolver {
 	return &pullRequestEdgeResolver{r}
 }
 
 type pullRequestResolver struct{ *Resolver }
-type pullRequestConnectionResolver struct{ *Resolver }
 type pullRequestEdgeResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *pullRequestConnectionResolver) Edges(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequestEdge, error) {
+	panic(fmt.Errorf("not implemented: Edges - edges"))
+}
+func (r *pullRequestConnectionResolver) Nodes(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequest, error) {
+	panic(fmt.Errorf("not implemented: Nodes - nodes"))
+}
+func (r *Resolver) PullRequestConnection() internal.PullRequestConnectionResolver {
+	return &pullRequestConnectionResolver{r}
+}
+type pullRequestConnectionResolver struct{ *Resolver }
+*/

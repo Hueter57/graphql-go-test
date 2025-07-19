@@ -41,14 +41,11 @@ type Config struct {
 
 type ResolverRoot interface {
 	Issue() IssueResolver
-	IssueConnection() IssueConnectionResolver
 	IssueEdge() IssueEdgeResolver
 	Mutation() MutationResolver
 	ProjectV2() ProjectV2Resolver
-	ProjectV2Connection() ProjectV2ConnectionResolver
 	ProjectV2Edge() ProjectV2EdgeResolver
 	PullRequest() PullRequestResolver
-	PullRequestConnection() PullRequestConnectionResolver
 	PullRequestEdge() PullRequestEdgeResolver
 	Query() QueryResolver
 	Repository() RepositoryResolver
@@ -189,10 +186,6 @@ type IssueResolver interface {
 	Repository(ctx context.Context, obj *model.Issue) (*model.Repository, error)
 	ProjectItems(ctx context.Context, obj *model.Issue, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error)
 }
-type IssueConnectionResolver interface {
-	Edges(ctx context.Context, obj *model.IssueConnection) ([]*model.IssueEdge, error)
-	Nodes(ctx context.Context, obj *model.IssueConnection) ([]*model.Issue, error)
-}
 type IssueEdgeResolver interface {
 	Node(ctx context.Context, obj *model.IssueEdge) (*model.Issue, error)
 }
@@ -203,20 +196,12 @@ type ProjectV2Resolver interface {
 	Items(ctx context.Context, obj *model.ProjectV2, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error)
 	Owner(ctx context.Context, obj *model.ProjectV2) (*model.User, error)
 }
-type ProjectV2ConnectionResolver interface {
-	Edges(ctx context.Context, obj *model.ProjectV2Connection) ([]*model.ProjectV2Edge, error)
-	Nodes(ctx context.Context, obj *model.ProjectV2Connection) ([]*model.ProjectV2, error)
-}
 type ProjectV2EdgeResolver interface {
 	Node(ctx context.Context, obj *model.ProjectV2Edge) (*model.ProjectV2, error)
 }
 type PullRequestResolver interface {
 	Repository(ctx context.Context, obj *model.PullRequest) (*model.Repository, error)
 	ProjectItems(ctx context.Context, obj *model.PullRequest, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error)
-}
-type PullRequestConnectionResolver interface {
-	Edges(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequestEdge, error)
-	Nodes(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequest, error)
 }
 type PullRequestEdgeResolver interface {
 	Node(ctx context.Context, obj *model.PullRequestEdge) (*model.PullRequest, error)
@@ -2509,7 +2494,7 @@ func (ec *executionContext) _IssueConnection_edges(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.IssueConnection().Edges(rctx, obj)
+		return obj.Edges, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2527,8 +2512,8 @@ func (ec *executionContext) fieldContext_IssueConnection_edges(_ context.Context
 	fc = &graphql.FieldContext{
 		Object:     "IssueConnection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "cursor":
@@ -2556,7 +2541,7 @@ func (ec *executionContext) _IssueConnection_nodes(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.IssueConnection().Nodes(rctx, obj)
+		return obj.Nodes, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2574,8 +2559,8 @@ func (ec *executionContext) fieldContext_IssueConnection_nodes(_ context.Context
 	fc = &graphql.FieldContext{
 		Object:     "IssueConnection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -3337,7 +3322,7 @@ func (ec *executionContext) _ProjectV2Connection_edges(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.ProjectV2Connection().Edges(rctx, obj)
+		return obj.Edges, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3355,8 +3340,8 @@ func (ec *executionContext) fieldContext_ProjectV2Connection_edges(_ context.Con
 	fc = &graphql.FieldContext{
 		Object:     "ProjectV2Connection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "cursor":
@@ -3384,7 +3369,7 @@ func (ec *executionContext) _ProjectV2Connection_nodes(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.ProjectV2Connection().Nodes(rctx, obj)
+		return obj.Nodes, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3402,8 +3387,8 @@ func (ec *executionContext) fieldContext_ProjectV2Connection_nodes(_ context.Con
 	fc = &graphql.FieldContext{
 		Object:     "ProjectV2Connection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -4457,7 +4442,7 @@ func (ec *executionContext) _PullRequestConnection_edges(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.PullRequestConnection().Edges(rctx, obj)
+		return obj.Edges, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4475,8 +4460,8 @@ func (ec *executionContext) fieldContext_PullRequestConnection_edges(_ context.C
 	fc = &graphql.FieldContext{
 		Object:     "PullRequestConnection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "cursor":
@@ -4504,7 +4489,7 @@ func (ec *executionContext) _PullRequestConnection_nodes(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.PullRequestConnection().Nodes(rctx, obj)
+		return obj.Nodes, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4522,8 +4507,8 @@ func (ec *executionContext) fieldContext_PullRequestConnection_nodes(_ context.C
 	fc = &graphql.FieldContext{
 		Object:     "PullRequestConnection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -8022,80 +8007,18 @@ func (ec *executionContext) _IssueConnection(ctx context.Context, sel ast.Select
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("IssueConnection")
 		case "edges":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._IssueConnection_edges(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._IssueConnection_edges(ctx, field, obj)
 		case "nodes":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._IssueConnection_nodes(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._IssueConnection_nodes(ctx, field, obj)
 		case "pageInfo":
 			out.Values[i] = ec._IssueConnection_pageInfo(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "totalCount":
 			out.Values[i] = ec._IssueConnection_totalCount(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -8424,80 +8347,18 @@ func (ec *executionContext) _ProjectV2Connection(ctx context.Context, sel ast.Se
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("ProjectV2Connection")
 		case "edges":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._ProjectV2Connection_edges(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._ProjectV2Connection_edges(ctx, field, obj)
 		case "nodes":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._ProjectV2Connection_nodes(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._ProjectV2Connection_nodes(ctx, field, obj)
 		case "pageInfo":
 			out.Values[i] = ec._ProjectV2Connection_pageInfo(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "totalCount":
 			out.Values[i] = ec._ProjectV2Connection_totalCount(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -8877,80 +8738,18 @@ func (ec *executionContext) _PullRequestConnection(ctx context.Context, sel ast.
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PullRequestConnection")
 		case "edges":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._PullRequestConnection_edges(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._PullRequestConnection_edges(ctx, field, obj)
 		case "nodes":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._PullRequestConnection_nodes(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._PullRequestConnection_nodes(ctx, field, obj)
 		case "pageInfo":
 			out.Values[i] = ec._PullRequestConnection_pageInfo(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "totalCount":
 			out.Values[i] = ec._PullRequestConnection_totalCount(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))

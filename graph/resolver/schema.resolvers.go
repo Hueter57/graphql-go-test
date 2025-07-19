@@ -6,7 +6,8 @@ package resolver
 
 import (
 	"context"
-	"fmt"
+	"errors"
+	"strings"
 
 	"github.com/Hueter57/graphql-go-test/graph/model"
 	"github.com/Hueter57/graphql-go-test/internal"
@@ -14,7 +15,21 @@ import (
 
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
-	panic(fmt.Errorf("not implemented: Node - node"))
+	idType := strings.SplitN(id, "_", 2)[0]
+
+	switch idType {
+	case "U":
+		return r.Srv.GetUserByID(ctx, id)
+	case "REPO":
+		return r.Srv.GetRepoByID(ctx, id)
+	case "ISSUE":
+		// return r.Srv.GetIssueByID(ctx, id)
+	case "PJ":
+		// return r.Srv.GetProjectByID(ctx, id)
+	case "PR":
+		// return r.Srv.GetPullRequestByID(ctx, id)
+	}
+	return nil, errors.New("invalid ID")
 }
 
 // Query returns internal.QueryResolver implementation.

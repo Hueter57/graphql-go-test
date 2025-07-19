@@ -38,3 +38,19 @@ func (r *repositoryService) GetRepoByFullName(ctx context.Context, owner, name s
 	}
 	return convertRepository(repo), nil
 }
+
+func (r *repositoryService) GetRepoByID(ctx context.Context, id string) (*model.Repository, error) {
+	repo, err := db.Repositories(
+		qm.Select(
+			db.RepositoryColumns.ID,        // レポジトリID
+			db.RepositoryColumns.Name,      // レポジトリ名
+			db.RepositoryColumns.Owner,     // レポジトリを所有しているユーザーのID
+			db.RepositoryColumns.CreatedAt, // 作成日時
+		),
+		db.RepositoryWhere.ID.EQ(id),
+	).One(ctx, r.exec)
+	if err != nil {
+		return nil, err
+	}
+	return convertRepository(repo), nil
+}

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aarondl/sqlboiler/v4/boil"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/vektah/gqlparser/v2/ast"
 
@@ -42,6 +43,8 @@ func main() {
 	srv := handler.New(internal.NewExecutableSchema(internal.Config{Resolvers: &resolver.Resolver{
 		Srv: service,
 	}}))
+
+	boil.DebugMode = true
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})

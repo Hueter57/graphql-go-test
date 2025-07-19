@@ -27,16 +27,6 @@ func (r *issueResolver) ProjectItems(ctx context.Context, obj *model.Issue, afte
 	panic(fmt.Errorf("not implemented: ProjectItems - projectItems"))
 }
 
-// Edges is the resolver for the edges field.
-func (r *issueConnectionResolver) Edges(ctx context.Context, obj *model.IssueConnection) ([]*model.IssueEdge, error) {
-	panic(fmt.Errorf("not implemented: Edges - edges"))
-}
-
-// Nodes is the resolver for the nodes field.
-func (r *issueConnectionResolver) Nodes(ctx context.Context, obj *model.IssueConnection) ([]*model.Issue, error) {
-	panic(fmt.Errorf("not implemented: Nodes - nodes"))
-}
-
 // Node is the resolver for the node field.
 func (r *issueEdgeResolver) Node(ctx context.Context, obj *model.IssueEdge) (*model.Issue, error) {
 	panic(fmt.Errorf("not implemented: Node - node"))
@@ -45,16 +35,10 @@ func (r *issueEdgeResolver) Node(ctx context.Context, obj *model.IssueEdge) (*mo
 // Issue returns internal.IssueResolver implementation.
 func (r *Resolver) Issue() internal.IssueResolver { return &issueResolver{r} }
 
-// IssueConnection returns internal.IssueConnectionResolver implementation.
-func (r *Resolver) IssueConnection() internal.IssueConnectionResolver {
-	return &issueConnectionResolver{r}
-}
-
 // IssueEdge returns internal.IssueEdgeResolver implementation.
 func (r *Resolver) IssueEdge() internal.IssueEdgeResolver { return &issueEdgeResolver{r} }
 
 type issueResolver struct{ *Resolver }
-type issueConnectionResolver struct{ *Resolver }
 type issueEdgeResolver struct{ *Resolver }
 
 // !!! WARNING !!!
@@ -64,5 +48,14 @@ type issueEdgeResolver struct{ *Resolver }
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
 /*
-	func (r *Resolver) IssueEdg() internal.IssueEdgeResolver { return &issueEdgeResolver{r} }
+	func (r *issueConnectionResolver) Edges(ctx context.Context, obj *model.IssueConnection) ([]*model.IssueEdge, error) {
+	panic(fmt.Errorf("not implemented: Edges - edges"))
+}
+func (r *issueConnectionResolver) Nodes(ctx context.Context, obj *model.IssueConnection) ([]*model.Issue, error) {
+	panic(fmt.Errorf("not implemented: Nodes - nodes"))
+}
+func (r *Resolver) IssueConnection() internal.IssueConnectionResolver {
+	return &issueConnectionResolver{r}
+}
+type issueConnectionResolver struct{ *Resolver }
 */

@@ -16,6 +16,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/Hueter57/graphql-go-test/graph"
 	"github.com/Hueter57/graphql-go-test/graph/resolver"
 	"github.com/Hueter57/graphql-go-test/graph/services"
 	"github.com/Hueter57/graphql-go-test/internal"
@@ -41,7 +42,8 @@ func main() {
 	service := services.New(db)
 
 	srv := handler.New(internal.NewExecutableSchema(internal.Config{Resolvers: &resolver.Resolver{
-		Srv: service,
+		Srv:     service,
+		Loaders: graph.NewLoaders(service),
 	}}))
 
 	boil.DebugMode = true

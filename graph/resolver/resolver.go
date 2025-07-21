@@ -1,11 +1,15 @@
 package resolver
 
-import "github.com/Hueter57/graphql-go-test/graph/services"
+import (
+	"github.com/Hueter57/graphql-go-test/graph"
+	"github.com/Hueter57/graphql-go-test/graph/services"
+)
 
 // This file will not be regenerated automatically.
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	Srv services.Services
+	Srv     services.Services
+	Loaders *graph.Loaders
 }

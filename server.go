@@ -45,6 +45,7 @@ func main() {
 		Srv:     service,
 		Loaders: graph.NewLoaders(service),
 	}}))
+	srv.Use(extension.FixedComplexityLimit(10))
 
 	boil.DebugMode = true
 

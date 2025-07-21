@@ -22,21 +22,10 @@ func (r *pullRequestResolver) ProjectItems(ctx context.Context, obj *model.PullR
 	panic(fmt.Errorf("not implemented: ProjectItems - projectItems"))
 }
 
-// Node is the resolver for the node field.
-func (r *pullRequestEdgeResolver) Node(ctx context.Context, obj *model.PullRequestEdge) (*model.PullRequest, error) {
-	panic(fmt.Errorf("not implemented: Node - node"))
-}
-
 // PullRequest returns internal.PullRequestResolver implementation.
 func (r *Resolver) PullRequest() internal.PullRequestResolver { return &pullRequestResolver{r} }
 
-// PullRequestEdge returns internal.PullRequestEdgeResolver implementation.
-func (r *Resolver) PullRequestEdge() internal.PullRequestEdgeResolver {
-	return &pullRequestEdgeResolver{r}
-}
-
 type pullRequestResolver struct{ *Resolver }
-type pullRequestEdgeResolver struct{ *Resolver }
 
 // !!! WARNING !!!
 // The code below was going to be deleted when updating resolvers. It has been copied here so you have
@@ -45,14 +34,11 @@ type pullRequestEdgeResolver struct{ *Resolver }
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
 /*
-	func (r *pullRequestConnectionResolver) Edges(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequestEdge, error) {
-	panic(fmt.Errorf("not implemented: Edges - edges"))
+	func (r *pullRequestEdgeResolver) Node(ctx context.Context, obj *model.PullRequestEdge) (*model.PullRequest, error) {
+	panic(fmt.Errorf("not implemented: Node - node"))
 }
-func (r *pullRequestConnectionResolver) Nodes(ctx context.Context, obj *model.PullRequestConnection) ([]*model.PullRequest, error) {
-	panic(fmt.Errorf("not implemented: Nodes - nodes"))
+func (r *Resolver) PullRequestEdge() internal.PullRequestEdgeResolver {
+	return &pullRequestEdgeResolver{r}
 }
-func (r *Resolver) PullRequestConnection() internal.PullRequestConnectionResolver {
-	return &pullRequestConnectionResolver{r}
-}
-type pullRequestConnectionResolver struct{ *Resolver }
+type pullRequestEdgeResolver struct{ *Resolver }
 */

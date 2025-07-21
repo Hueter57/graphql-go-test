@@ -27,23 +27,14 @@ func (r *projectV2Resolver) Owner(ctx context.Context, obj *model.ProjectV2) (*m
 	panic(fmt.Errorf("not implemented: Owner - owner"))
 }
 
-// Node is the resolver for the node field.
-func (r *projectV2EdgeResolver) Node(ctx context.Context, obj *model.ProjectV2Edge) (*model.ProjectV2, error) {
-	panic(fmt.Errorf("not implemented: Node - node"))
-}
-
 // Mutation returns internal.MutationResolver implementation.
 func (r *Resolver) Mutation() internal.MutationResolver { return &mutationResolver{r} }
 
 // ProjectV2 returns internal.ProjectV2Resolver implementation.
 func (r *Resolver) ProjectV2() internal.ProjectV2Resolver { return &projectV2Resolver{r} }
 
-// ProjectV2Edge returns internal.ProjectV2EdgeResolver implementation.
-func (r *Resolver) ProjectV2Edge() internal.ProjectV2EdgeResolver { return &projectV2EdgeResolver{r} }
-
 type mutationResolver struct{ *Resolver }
 type projectV2Resolver struct{ *Resolver }
-type projectV2EdgeResolver struct{ *Resolver }
 
 // !!! WARNING !!!
 // The code below was going to be deleted when updating resolvers. It has been copied here so you have
@@ -52,14 +43,9 @@ type projectV2EdgeResolver struct{ *Resolver }
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
 /*
-	func (r *projectV2ConnectionResolver) Edges(ctx context.Context, obj *model.ProjectV2Connection) ([]*model.ProjectV2Edge, error) {
-	panic(fmt.Errorf("not implemented: Edges - edges"))
+	func (r *projectV2EdgeResolver) Node(ctx context.Context, obj *model.ProjectV2Edge) (*model.ProjectV2, error) {
+	panic(fmt.Errorf("not implemented: Node - node"))
 }
-func (r *projectV2ConnectionResolver) Nodes(ctx context.Context, obj *model.ProjectV2Connection) ([]*model.ProjectV2, error) {
-	panic(fmt.Errorf("not implemented: Nodes - nodes"))
-}
-func (r *Resolver) ProjectV2Connection() internal.ProjectV2ConnectionResolver {
-	return &projectV2ConnectionResolver{r}
-}
-type projectV2ConnectionResolver struct{ *Resolver }
+func (r *Resolver) ProjectV2Edge() internal.ProjectV2EdgeResolver { return &projectV2EdgeResolver{r} }
+type projectV2EdgeResolver struct{ *Resolver }
 */

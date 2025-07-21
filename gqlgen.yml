@@ -53,10 +53,10 @@ models:
   #       resolver: true
   #     edges:
   #       resolver: true
-  IssueEdge:
-    fields:
-      node:
-        resolver: true
+  # IssueEdge:
+  #   fields:
+  #     node:
+  #       resolver: true
   PullRequest:
     fields:
       repository:
@@ -69,10 +69,10 @@ models:
   #       resolver: true
   #     edges:
   #       resolver: true
-  PullRequestEdge:
-    fields:
-      node:
-        resolver: true
+  # PullRequestEdge:
+  #   fields:
+  #     node:
+  #       resolver: true
   ProjectV2:
     fields:
       items:
@@ -85,10 +85,10 @@ models:
   #       resolver: true
   #     edges:
   #       resolver: true
-  ProjectV2Edge:
-    fields:
-      node:
-        resolver: true
+  # ProjectV2Edge:
+  #   fields:
+  #     node:
+  #       resolver: true
   
 
   ID:

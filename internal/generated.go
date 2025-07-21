@@ -41,12 +41,9 @@ type Config struct {
 
 type ResolverRoot interface {
 	Issue() IssueResolver
-	IssueEdge() IssueEdgeResolver
 	Mutation() MutationResolver
 	ProjectV2() ProjectV2Resolver
-	ProjectV2Edge() ProjectV2EdgeResolver
 	PullRequest() PullRequestResolver
-	PullRequestEdge() PullRequestEdgeResolver
 	Query() QueryResolver
 	Repository() RepositoryResolver
 	User() UserResolver
@@ -186,9 +183,6 @@ type IssueResolver interface {
 	Repository(ctx context.Context, obj *model.Issue) (*model.Repository, error)
 	ProjectItems(ctx context.Context, obj *model.Issue, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error)
 }
-type IssueEdgeResolver interface {
-	Node(ctx context.Context, obj *model.IssueEdge) (*model.Issue, error)
-}
 type MutationResolver interface {
 	AddProjectV2ItemByID(ctx context.Context, input model.AddProjectV2ItemByIDInput) (*model.AddProjectV2ItemByIDPayload, error)
 }
@@ -196,15 +190,9 @@ type ProjectV2Resolver interface {
 	Items(ctx context.Context, obj *model.ProjectV2, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error)
 	Owner(ctx context.Context, obj *model.ProjectV2) (*model.User, error)
 }
-type ProjectV2EdgeResolver interface {
-	Node(ctx context.Context, obj *model.ProjectV2Edge) (*model.ProjectV2, error)
-}
 type PullRequestResolver interface {
 	Repository(ctx context.Context, obj *model.PullRequest) (*model.Repository, error)
 	ProjectItems(ctx context.Context, obj *model.PullRequest, after *string, before *string, first *int, last *int) (*model.ProjectV2ItemConnection, error)
-}
-type PullRequestEdgeResolver interface {
-	Node(ctx context.Context, obj *model.PullRequestEdge) (*model.PullRequest, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (model.Node, error)
@@ -2742,7 +2730,7 @@ func (ec *executionContext) _IssueEdge_node(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.IssueEdge().Node(rctx, obj)
+		return obj.Node, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2760,8 +2748,8 @@ func (ec *executionContext) fieldContext_IssueEdge_node(_ context.Context, field
 	fc = &graphql.FieldContext{
 		Object:     "IssueEdge",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -3566,7 +3554,7 @@ func (ec *executionContext) _ProjectV2Edge_node(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.ProjectV2Edge().Node(rctx, obj)
+		return obj.Node, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3584,8 +3572,8 @@ func (ec *executionContext) fieldContext_ProjectV2Edge_node(_ context.Context, f
 	fc = &graphql.FieldContext{
 		Object:     "ProjectV2Edge",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -4690,7 +4678,7 @@ func (ec *executionContext) _PullRequestEdge_node(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.PullRequestEdge().Node(rctx, obj)
+		return obj.Node, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4708,8 +4696,8 @@ func (ec *executionContext) fieldContext_PullRequestEdge_node(_ context.Context,
 	fc = &graphql.FieldContext{
 		Object:     "PullRequestEdge",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -8057,41 +8045,10 @@ func (ec *executionContext) _IssueEdge(ctx context.Context, sel ast.SelectionSet
 		case "cursor":
 			out.Values[i] = ec._IssueEdge_cursor(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "node":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._IssueEdge_node(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._IssueEdge_node(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8397,41 +8354,10 @@ func (ec *executionContext) _ProjectV2Edge(ctx context.Context, sel ast.Selectio
 		case "cursor":
 			out.Values[i] = ec._ProjectV2Edge_cursor(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "node":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._ProjectV2Edge_node(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._ProjectV2Edge_node(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8788,41 +8714,10 @@ func (ec *executionContext) _PullRequestEdge(ctx context.Context, sel ast.Select
 		case "cursor":
 			out.Values[i] = ec._PullRequestEdge_cursor(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "node":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._PullRequestEdge_node(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._PullRequestEdge_node(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

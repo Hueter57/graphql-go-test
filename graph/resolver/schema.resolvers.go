@@ -23,9 +23,9 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 	case "REPO":
 		return r.Srv.GetRepoByID(ctx, id)
 	case "ISSUE":
-		// return r.Srv.GetIssueByID(ctx, id)
+		return r.Srv.GetIssueByID(ctx, id)
 	case "PJ":
-		// return r.Srv.GetProjectByID(ctx, id)
+		return r.Srv.GetProjectByID(ctx, id)
 	case "PR":
 		// return r.Srv.GetPullRequestByID(ctx, id)
 	}

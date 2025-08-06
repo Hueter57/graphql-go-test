@@ -24,7 +24,7 @@ func (r *projectV2Resolver) Items(ctx context.Context, obj *model.ProjectV2, aft
 
 // Owner is the resolver for the owner field.
 func (r *projectV2Resolver) Owner(ctx context.Context, obj *model.ProjectV2) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: Owner - owner"))
+	return r.Srv.GetUserByID(ctx, obj.Owner.ID)
 }
 
 // Mutation returns internal.MutationResolver implementation.

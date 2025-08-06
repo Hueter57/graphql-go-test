@@ -15,6 +15,25 @@ type issueService struct {
 	exec boil.ContextExecutor
 }
 
+func (i *issueService) GetIssueByID(ctx context.Context, id string) (*model.Issue, error) {
+	issue, err := db.Issues(
+		qm.Select(
+			db.IssueColumns.ID,
+			db.IssueColumns.URL,
+			db.IssueColumns.Title,
+			db.IssueColumns.Closed,
+			db.IssueColumns.Number,
+			db.IssueColumns.Author,
+			db.IssueColumns.Repository,
+		),
+		db.IssueWhere.ID.EQ(id),
+	).One(ctx, i.exec)
+	if err != nil {
+		return nil, err
+	}
+	return convertIssue(issue), nil
+}
+
 func (i *issueService) GetIssueByRepoAndNumber(ctx context.Context, repoID string, number int) (*model.Issue, error) {
 	issue, err := db.Issues(
 		qm.Select(

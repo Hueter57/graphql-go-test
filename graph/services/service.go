@@ -19,20 +19,33 @@ type RepositoryService interface {
 }
 
 type IssueService interface {
+	GetIssueByID(ctx context.Context, id string) (*model.Issue, error)
 	GetIssueByRepoAndNumber(ctx context.Context, repoID string, number int) (*model.Issue, error)
 	ListIssueInRepository(ctx context.Context, repoID string, after *string, before *string, first *int, last *int) (*model.IssueConnection, error)
+}
+
+type ProjectService interface {
+	GetProjectByID(ctx context.Context, id string) (*model.ProjectV2, error)
+}
+
+type PullRequestService interface {
+	GetPullRequestByID(ctx context.Context, id string) (*model.PullRequest, error)
 }
 
 type Services interface {
 	UserService
 	RepositoryService
 	IssueService
+	PullRequestService
+	ProjectService
 }
 
 type services struct {
 	*userService
 	*repositoryService
 	*issueService
+	*projectService
+	*pullRequestService
 }
 
 func New(exec boil.ContextExecutor) Services {
@@ -40,5 +53,7 @@ func New(exec boil.ContextExecutor) Services {
 		userService:       &userService{exec: exec},
 		repositoryService: &repositoryService{exec: exec},
 		issueService:      &issueService{exec: exec},
+		projectService:    &projectService{exec: exec},
+		pullRequestService: &pullRequestService{exec: exec},
 	}
 }

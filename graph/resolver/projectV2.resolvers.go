@@ -35,17 +35,3 @@ func (r *Resolver) ProjectV2() internal.ProjectV2Resolver { return &projectV2Res
 
 type mutationResolver struct{ *Resolver }
 type projectV2Resolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (r *projectV2EdgeResolver) Node(ctx context.Context, obj *model.ProjectV2Edge) (*model.ProjectV2, error) {
-	panic(fmt.Errorf("not implemented: Node - node"))
-}
-func (r *Resolver) ProjectV2Edge() internal.ProjectV2EdgeResolver { return &projectV2EdgeResolver{r} }
-type projectV2EdgeResolver struct{ *Resolver }
-*/

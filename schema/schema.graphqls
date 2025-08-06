@@ -1,3 +1,5 @@
+directive @isAuthenticated on FIELD_DEFINITION
+
 scalar DateTime
   @specifiedBy(url: "https://scalars.graphql.org/andimarek/local-date")
 

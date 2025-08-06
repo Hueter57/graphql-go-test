@@ -11,5 +11,5 @@ type User implements Node {
 }
 
 extend type Query {
-  user(name: String!): User # @isAuthenticated
+  user(name: String!): User @isAuthenticated
 }

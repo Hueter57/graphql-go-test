@@ -23,6 +23,7 @@ import (
 	"github.com/Hueter57/graphql-go-test/graph/resolver"
 	"github.com/Hueter57/graphql-go-test/graph/services"
 	"github.com/Hueter57/graphql-go-test/internal"
+	"github.com/Hueter57/graphql-go-test/middlewares/auth"
 )
 
 const (
@@ -49,10 +50,11 @@ func main() {
 			Srv:     service,
 			Loaders: graph.NewLoaders(service),
 		},
+		Directives: graph.Directive,
 		Complexity: graph.ComplexityConfig(),
 	}))
 	srv.Use(extension.FixedComplexityLimit(20))
-	
+
 	srv.AroundOperations(func(ctx context.Context, next graphql.OperationHandler) graphql.ResponseHandler {
 		log.Println("before OperationHandler")
 		res := next(ctx)
@@ -96,7 +98,7 @@ func main() {
 	})
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", auth.AuthMiddleware(srv))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

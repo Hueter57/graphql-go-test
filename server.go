@@ -41,11 +41,14 @@ func main() {
 
 	service := services.New(db)
 
-	srv := handler.New(internal.NewExecutableSchema(internal.Config{Resolvers: &resolver.Resolver{
-		Srv:     service,
-		Loaders: graph.NewLoaders(service),
-	}}))
-	srv.Use(extension.FixedComplexityLimit(10))
+	srv := handler.New(internal.NewExecutableSchema(internal.Config{
+		Resolvers: &resolver.Resolver{
+			Srv:     service,
+			Loaders: graph.NewLoaders(service),
+		},
+		Complexity: graph.ComplexityConfig(),
+	}))
+	srv.Use(extension.FixedComplexityLimit(20))
 
 	boil.DebugMode = true
 

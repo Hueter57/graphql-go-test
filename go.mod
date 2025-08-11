@@ -4,13 +4,17 @@ go 1.24.4
 
 require (
 	github.com/99designs/gqlgen v0.17.76
+	github.com/DATA-DOG/go-sqlmock v1.4.1
 	github.com/aarondl/null/v8 v8.1.3
 	github.com/aarondl/sqlboiler/v4 v4.19.5
 	github.com/aarondl/strmangle v0.0.9
 	github.com/friendsofgo/errors v0.9.2
+	github.com/google/go-cmp v0.7.0
 	github.com/graph-gophers/dataloader/v7 v7.1.0
 	github.com/mattn/go-sqlite3 v1.14.28
+	github.com/tenntenn/golden v0.5.5
 	github.com/vektah/gqlparser/v2 v2.5.30
+	go.uber.org/mock v0.5.2
 )
 
 require (
@@ -22,7 +26,10 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
+	github.com/josharian/mapfs v0.0.0-20210615234106-095c008854e6 // indirect
+	github.com/josharian/txtarfs v0.0.0-20240408113805-5dc76b8fe6bf // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
+	golang.org/x/tools v0.34.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 )

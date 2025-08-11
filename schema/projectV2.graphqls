@@ -1,0 +1,60 @@
+type ProjectV2 implements Node {
+  id: ID!
+  title: String!
+  url: URI!
+  number: Int!
+  items(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ProjectV2ItemConnection!
+  owner: User!
+}
+
+type ProjectV2Connection {
+  edges: [ProjectV2Edge]
+  nodes: [ProjectV2]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProjectV2Edge {
+  cursor: String!
+  node: ProjectV2
+}
+
+union ProjectV2ItemContent = Issue | PullRequest
+
+type ProjectV2Item implements Node {
+  id: ID!
+  project: ProjectV2!
+  content: ProjectV2ItemContent
+}
+
+type ProjectV2ItemConnection {
+  edges: [ProjectV2ItemEdge]
+  nodes: [ProjectV2Item]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProjectV2ItemEdge {
+  cursor: String!
+  node: ProjectV2Item
+}
+
+input AddProjectV2ItemByIdInput {
+  contentId: ID!
+  projectId: ID!
+}
+
+type AddProjectV2ItemByIdPayload {
+  item: ProjectV2Item
+}
+
+extend type Mutation {
+  addProjectV2ItemById(
+    input: AddProjectV2ItemByIdInput!
+  ): AddProjectV2ItemByIdPayload
+}

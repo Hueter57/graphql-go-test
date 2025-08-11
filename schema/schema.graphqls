@@ -1,0 +1,21 @@
+directive @isAuthenticated on FIELD_DEFINITION
+
+scalar DateTime
+  @specifiedBy(url: "https://scalars.graphql.org/andimarek/local-date")
+
+scalar URI @specifiedBy(url: "https://tools.ietf.org/html/rfc3986")
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+extend type Query {
+  node(id: ID!): Node
+}

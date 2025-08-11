@@ -1,0 +1,19 @@
+type Repository implements Node {
+  id: ID!
+  owner: User!
+  name: String!
+  createdAt: DateTime!
+  issue(number: Int!): Issue
+  issues(after: String, before: String, first: Int, last: Int): IssueConnection!
+  pullRequest(number: Int!): PullRequest
+  pullRequests(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): PullRequestConnection!
+}
+
+extend type Query {
+  repository(name: String!, owner: String!): Repository
+}

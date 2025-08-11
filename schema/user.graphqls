@@ -1,0 +1,15 @@
+type User implements Node {
+  id: ID!
+  name: String!
+  projectV2(number: Int!): ProjectV2
+  projectV2s(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ProjectV2Connection!
+}
+
+extend type Query {
+  user(name: String!): User @isAuthenticated
+}
